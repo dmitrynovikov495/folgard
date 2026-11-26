@@ -245,6 +245,12 @@ body.vk .notvk{display:none}
 .res.exp{border:2px solid var(--amber);background:rgba(242,179,61,.1)}
 .res.bad{border:2px solid var(--red);background:rgba(229,72,77,.1)}
 .res .t{font-size:21px;font-weight:800;margin-top:6px}
+
+.awards{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:8px 0}
+.aw{display:flex;gap:10px;align-items:center;background:var(--bg2);border:1px solid var(--line);border-radius:12px;padding:10px}
+.aw svg{flex:0 0 40px;width:40px;height:56px}
+.aw b{font-size:13px;line-height:1.25;color:#e6e9ee;display:block}
+.aw span{font-size:11px;color:var(--muted);font-family:var(--mono)}
 </style>
 </head>
 <body>
@@ -343,6 +349,7 @@ body.vk .notvk{display:none}
       <div class="kv"><span>Модель экрана</span><b id="qrModel">—</b></div>
     </div>
   </div>
+  <div id="qrAwards"></div>
   <p class="small" style="text-align:center;margin-top:10px">Код считывается камерой любого смартфона.</p>
   <button class="btn center" id="qrAct" onclick="go('activate')" style="display:none">Активировать защиту</button>
   <button class="btn center vkonly" onclick="storyCert()">Опубликовать в историю</button>
@@ -593,7 +600,7 @@ body.vk .notvk{display:none}
     <p>QR-код защиты ведёт на сайт проверки, который тоже является шуткой.</p>
     <p>Геомагнитный индекс — открытые данные Центра прогнозирования космической погоды NOAA (США). Рекомендации к нему — шутка.</p>
     <p class="small"><a href="https://dmitrynovikov495.github.io/folgard/privacy.html" style="color:var(--cyan)">Политика конфиденциальности</a> · <a href="https://dmitrynovikov495.github.io/folgard/terms.html" style="color:var(--cyan)">Пользовательское соглашение</a></p>
-    <p class="small">Версия 1.10</p>
+    <p class="small">Версия 1.11</p>
   </div>
   <button class="btn dark center" onclick="resetAll()">Сбросить данные приложения</button>
 </section>
@@ -3084,6 +3091,42 @@ function pickHat(){
   var h=document.getElementById("camHint"); if(h) h.textContent="Модель экрана: "+HATS[i].n+" · лицо в овал · без улыбки";
 }
 
+
+// ---------- награды владельца сертификата (одинаковые в приложении и на сайте) ----------
+var AWARDS = [
+  ["Орден Фарадея II степени", "#2f5d9e,#e9b949", "#e9b949"],
+  ["Почётный уфолог", "#3ccf7a,#151e26", "#c9ced6"],
+  ["Медаль «За отражение 5G»", "#e5484d,#ffffff", "#c9ced6"],
+  ["Знак «Отличник экранирования»", "#33d1c4,#151e26", "#e9b949"],
+  ["Орден Алюминиевой фольги III степени", "#c9ced6,#5b667a", "#eef1f7"],
+  ["Медаль «За бдительность при магнитных бурях»", "#f2b33d,#151e26", "#e9b949"],
+  ["Нагрудный знак «Заслуженный шуршатель»", "#7b1fa2,#e9b949", "#c9ced6"],
+  ["Почётная грамота ГСК «Восход»", "#8a5a2b,#e9b949", "#e9b949"],
+  ["Медаль «За стойкость к Р-сигнатурам»", "#2e7d32,#e9b949", "#c9ced6"]
+];
+var AWARD_VETERAN = ["Знак «Ветеран экранирования»", "#b71c1c,#e9b949", "#e9b949"];
+var AWARD_PHOTO = ["Медаль «За фотофиксацию без улыбки»", "#1565c0,#ffffff", "#c9ced6"];
+function awardsFor(n,u,p){
+  var h=2166136261, str="AW|"+n;
+  for(var i=0;i<str.length;i++){ h^=str.charCodeAt(i); h=Math.imul(h,16777619)>>>0; }
+  var a=h%AWARDS.length, b=(a+1+(h>>>8)%(AWARDS.length-1))%AWARDS.length;
+  var list=[AWARDS[a],AWARDS[b]];
+  if(u==="inf") list.unshift(AWARD_VETERAN);
+  if(p==="1") list.push(AWARD_PHOTO);
+  return list;
+}
+function medalSvg(ribbon, metal){
+  var c=ribbon.split(",");
+  return '<svg viewBox="0 0 40 56" aria-hidden="true">'+
+    '<path d="M8 0 H32 L26 22 H14 Z" fill="'+c[0]+'"/><path d="M16 0 H24 L22 22 H18 Z" fill="'+c[1]+'"/>'+
+    '<circle cx="20" cy="38" r="15" fill="'+metal+'" stroke="#5b667a" stroke-width="1.5"/>'+
+    '<path d="M20 28 L23 35 L30 35.5 L24.5 40 L26.5 47 L20 43 L13.5 47 L15.5 40 L10 35.5 L17 35 Z" fill="#fff" fill-opacity=".55" stroke="#5b667a" stroke-width="1"/></svg>';
+}
+function awardsHtml(n,u,p){
+  return '<div class="awards">'+awardsFor(n,u,p).map(function(a){ return '<div class="aw">'+medalSvg(a[1],a[2])+'<div><b>'+a[0]+'</b><span>серт. № '+n+'</span></div></div>'; }).join("")+'</div>';
+}
+var EXPERT_URL = "https://www.culture.ru/poems/19019/pismo-v-redakciyu-televizionnoi-peredachi-ochevidnoe-neveroyatnoe-iz-sumasshedshego-doma-s-kanatchikovoi-dachi";
+
 function grab(src){
   var v=src||document.getElementById("video");
   var vw=v.videoWidth||v.naturalWidth, vh=v.videoHeight||v.naturalHeight; if(!vw) return null;
@@ -3314,6 +3357,8 @@ function fillQr(){
   document.getElementById("qrPhoto").textContent = f ? "пройдена" : "не пройдена";
   document.getElementById("qrModel").textContent = store("fg_model") || "шишак богатырский";
   document.getElementById("qrAct").style.display = left>0 ? "none" : "block";
+  var cu = unlimited() ? "inf" : (expiry()>0 ? ymd(expiry()) : "0");
+  document.getElementById("qrAwards").innerHTML = left>0 ? '<h2>Награды</h2>'+awardsHtml(protoNo(), cu, f?"1":"0") : "";
 }
 function mailCert(){
   var left=expiry()-Date.now();
@@ -3430,7 +3475,9 @@ function showCheck(text){
                    : '<div class="res exp"><div style="font-size:48px">⏱</div><div class="t">Срок экранирования истёк</div><p class="muted">Владельцу нужно повторно активировать защиту</p></div>')+
       '<div class="card"><div class="kv"><span>Номер</span><b>'+c.n+'</b></div>'+
       '<div class="kv"><span>Действителен до</span><b>'+(c.u==="inf"?"бессрочно":(c.u==="0"?"—":c.u.slice(6,8)+"."+c.u.slice(4,6)+"."+c.u.slice(0,4)))+'</b></div>'+
-      '<div class="kv"><span>Фотофиксация</span><b>'+(c.p==="1"?"пройдена":"не пройдена")+'</b></div></div>';
+      '<div class="kv"><span>Фотофиксация</span><b>'+(c.p==="1"?"пройдена":"не пройдена")+'</b></div></div>'+
+      '<h2>Награды владельца</h2>'+awardsHtml(c.n,c.u,c.p)+
+      '<p class="small"><a href="'+EXPERT_URL+'" style="color:var(--cyan)">Независимое мнение экспертов</a></p>';
   }
   box.innerHTML=html; go("checkres");
 }

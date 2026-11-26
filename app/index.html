@@ -283,8 +283,8 @@ body.vk .notvk{display:none}
   <div id="homeStatus"></div>
   <div id="storm"></div>
 
-  <button class="btn dark" onclick="go('guide')"><span class="num">ШАГ 1</span><br>Изготовление экрана<span class="sub">Инструкция, 5 минут</span><span class="arr">›</span></button>
-  <button class="btn dark" onclick="go('verify')"><span class="num">ШАГ 2</span><br>Фотофиксация и проверка<span class="sub">Фото экрана и селфи в экране</span><span class="arr">›</span></button>
+  <button class="btn dark" onclick="go('guide')"><span class="num">ШАГ 1</span><br>Изготовление экрана<span class="sub">Инструкция, 5 минут · можно без фольги</span><span class="arr">›</span></button>
+  <button class="btn dark" onclick="go('verify')"><span class="num">ШАГ 2</span><br>Фотофиксация и проверка<span class="sub">Селфи с виртуальным экраном — фольга не обязательна</span><span class="arr">›</span></button>
   <button class="btn" onclick="go('activate')"><span class="num" style="color:#04201d">ШАГ 3</span><br>Активация защиты<span class="arr">›</span></button>
   <button class="btn amber" onclick="go('premium')">Расширенная защита<span class="sub" id="premSub">Экран-365 — бесплатно для всех</span><span class="arr">›</span></button>
 
@@ -414,7 +414,7 @@ body.vk .notvk{display:none}
   <button class="back" onclick="stopCam();history.back()">‹ Назад</button>
   <div class="progress-steps"><i id="ps1"></i><i id="ps2"></i></div>
   <h1 id="vTitle">Фотофиксация экрана</h1>
-  <p class="muted" id="vText">Положите экран на стол и поместите его в рамку.</p>
+  <p class="muted" id="vText">Если у вас есть экран из фольги — положите его на стол и поместите в рамку. Нет экрана — не страшно: виртуального экрана достаточно.</p>
   <div class="cam" id="camBox">
     <video id="video" autoplay playsinline muted></video>
     <div id="camMask" class="frame"></div>
@@ -423,6 +423,7 @@ body.vk .notvk{display:none}
     <div class="camhint" id="camHint">Экран должен целиком попадать в рамку</div>
     <div class="camerr" id="camErr" style="display:none"></div>
   </div>
+  <button class="btn dark center" id="virtBtn" onclick="useVirtual()">У меня нет шапки — использовать виртуальный экран</button>
   <button class="btn dark center" id="hatBtn" style="display:none" onclick="pickHat()">Другая модель экрана</button>
   <button class="btn center" id="shotBtn" onclick="takeShot()">Сделать снимок</button>
   <button class="btn center" id="retryBtn" style="display:none" onclick="setStage(vStage)">Запросить доступ к камере снова</button>
@@ -437,7 +438,7 @@ body.vk .notvk{display:none}
   <button class="back" onclick="history.back()">‹ Назад</button>
   <h1>Активация защиты</h1>
   <p class="muted">Подтвердите готовность. Активация без надетого экрана не даёт эффекта.</p>
-  <label class="check"><input type="checkbox" class="pre"> Экран надет и плотно прилегает</label>
+  <label class="check"><input type="checkbox" class="pre"> Экран надет — из фольги или виртуальный</label>
   <label class="check"><input type="checkbox" class="pre"> Височные зоны закрыты</label>
   <label class="check"><input type="checkbox" class="pre"> Телефон находится не ближе 30 см от головы</label>
   <button class="bigbtn" id="bigbtn" disabled onclick="runActivation()">Активировать антирептилоидную и&nbsp;5G&nbsp;защиту</button>
@@ -600,7 +601,7 @@ body.vk .notvk{display:none}
     <p>QR-код защиты ведёт на сайт проверки, который тоже является шуткой.</p>
     <p>Геомагнитный индекс — открытые данные Центра прогнозирования космической погоды NOAA (США). Рекомендации к нему — шутка.</p>
     <p class="small"><a href="https://dmitrynovikov495.github.io/folgard/privacy.html" style="color:var(--cyan)">Политика конфиденциальности</a> · <a href="https://dmitrynovikov495.github.io/folgard/terms.html" style="color:var(--cyan)">Пользовательское соглашение</a></p>
-    <p class="small">Версия 1.11</p>
+    <p class="small">Версия 1.12</p>
   </div>
   <button class="btn dark center" onclick="resetAll()">Сбросить данные приложения</button>
 </section>
@@ -3046,14 +3047,14 @@ function setStage(n){
   var box=document.getElementById("camBox"), mask=document.getElementById("camMask");
   if(n===1){
     document.getElementById("vTitle").textContent="Фотофиксация экрана";
-    document.getElementById("vText").textContent="Положите экран на стол и поместите его в рамку.";
+    document.getElementById("vText").textContent="Если у вас есть экран из фольги — положите его на стол и поместите в рамку. Нет экрана — не страшно: виртуального экрана достаточно.";
     document.getElementById("camHint").textContent="Совместите экран с контуром в рамке";
-    mask.className="frame"; box.classList.remove("mirror"); document.getElementById("hguide").className="hguide g1"; document.getElementById("hguide").innerHTML=HG_DASH; document.getElementById("hatBtn").style.display="none";
+    mask.className="frame"; box.classList.remove("mirror"); document.getElementById("hguide").className="hguide g1"; document.getElementById("hguide").innerHTML=HG_DASH; document.getElementById("hatBtn").style.display="none"; document.getElementById("virtBtn").style.display="block";
   } else {
     document.getElementById("vTitle").textContent="Селфи в экране";
-    document.getElementById("vText").textContent="Наденьте экран. Приложение подберёт модель и покажет её на голове. Лицо — в овале. Сохраняйте серьёзное выражение лица: улыбка искажает контур.";
+    document.getElementById("vText").textContent="Физическая шапка не обязательна: приложение само нанесёт на вас виртуальный экран — его защиты достаточно. Лицо — в овале. Сохраняйте серьёзное выражение лица: улыбка искажает контур.";
     document.getElementById("camHint").textContent="Экран — по контуру · лицо — в овале · без улыбки";
-    mask.className="oval"; box.classList.add("mirror"); document.getElementById("hguide").className="hguide g2"; pickHat(); document.getElementById("hatBtn").style.display="block";
+    mask.className="oval"; box.classList.add("mirror"); document.getElementById("hguide").className="hguide g2"; pickHat(); document.getElementById("hatBtn").style.display="block"; document.getElementById("virtBtn").style.display="none";
   }
   document.getElementById("shotBtn").disabled=false;
   openCam(n===1 ? "environment" : "user");
@@ -3156,13 +3157,17 @@ function photoPicked(inp){
 function afterShot(img){
   {
     if(vStage===1){
-      if(img) store("fg_hat", img);
+      if(img) store("fg_hat", img); store("fg_virtual","0");
       runSteps("Анализ экрана", [["Контур экрана","обнаружен"],["Материал","алюминий"],["Разрывы","не выявлены"],["Площадь покрытия","достаточная"]], function(){ setStage(2); });
     } else {
       if(img) store("fg_face", img); store("fg_model", HATS[HAT_I].n);
-      runSteps("Проверка пользователя", [["Лицо в контуре","да"],["Модель экрана",HATS[HAT_I].n.toLowerCase()],["Экран на голове","подтверждён"],["Цифровое усиление контура экрана","применено"],["Височные зоны","закрыты"],["Выражение лица","серьёзное"],["Признаки подмены","нет"]], function(){ go("activate"); });
+      runSteps("Проверка пользователя", [["Лицо в контуре","да"],["Модель экрана",HATS[HAT_I].n.toLowerCase()],["Нанесение виртуального экрана","выполнено"],["Экран на голове","подтверждён"],["Цифровое усиление контура экрана","применено"],["Височные зоны","закрыты"],["Выражение лица","серьёзное"],["Признаки подмены","нет"]], function(){ go("activate"); });
     }
   }
+}
+function useVirtual(){
+  stopCam(); store("fg_hat", null); store("fg_virtual","1");
+  runSteps("Виртуальный экран", [["Физический экран","не требуется"],["Генерация экрана","выполнена"],["Плотность покрытия","100%"],["Эквивалент фольги","2 слоя, 14 мкм"]], function(){ setStage(2); });
 }
 function skipVerify(){ stopCam(); if(vStage===1){ setStage(2); } else { go("activate"); } }
 
@@ -3191,7 +3196,7 @@ function fillProto(){
   var t=new Date(parseInt(store("fg_act")||Date.now(),10));
   document.getElementById("protoData").innerHTML =
     dateStr(t)+" "+String(t.getHours()).padStart(2,"0")+":"+String(t.getMinutes()).padStart(2,"0")+"<br>"+
-    "Фотофиксация: "+(f&&h?"пройдена":"нет")+"<br>Экран: "+(store("fg_model")||"Al, 2 слоя")+"<br>Статус: <span style='color:var(--green)'>активна</span>";
+    "Фотофиксация: "+(f&&(h||store("fg_virtual")==="1")?"пройдена":"нет")+"<br>Экран: "+(store("fg_model")||"Al, 2 слоя")+(store("fg_virtual")==="1"?" (виртуальный)":"")+"<br>Статус: <span style='color:var(--green)'>активна</span>";
 }
 
 // ---------- расширенная защита ----------
@@ -3516,7 +3521,7 @@ function loadStorm(){
     .catch(function(){ try{ var c=JSON.parse(store("fg_kp")||"null"); renderStorm(c && Date.now()-c.at<6*3600000 ? c.kp : null); }catch(e){ renderStorm(null); } });
 }
 
-function resetAll(){ ["fg_age","fg_exp","fg_unlim","fg_hat","fg_face","fg_proto","fg_act","fg_year"].forEach(function(k){ store(k,null); }); location.hash="age"; show("age"); }
+function resetAll(){ ["fg_virtual","fg_model","fg_age","fg_exp","fg_unlim","fg_hat","fg_face","fg_proto","fg_act","fg_year"].forEach(function(k){ store(k,null); }); location.hash="age"; show("age"); }
 
 renderTrust();
 buildSplash();

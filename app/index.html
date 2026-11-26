@@ -636,7 +636,7 @@ body.vk .notvk{display:none}
     <p>QR-код защиты ведёт на сайт проверки, который тоже является шуткой.</p>
     <p>Геомагнитный индекс — открытые данные Центра прогнозирования космической погоды NOAA (США). Рекомендации к нему — шутка.</p>
     <p class="small"><a href="https://dmitrynovikov495.github.io/folgard/privacy.html" style="color:var(--cyan)">Политика конфиденциальности</a> · <a href="https://dmitrynovikov495.github.io/folgard/terms.html" style="color:var(--cyan)">Пользовательское соглашение</a></p>
-    <p class="small">Версия 1.14</p>
+    <p class="small">Версия 1.15</p>
   </div>
   <button class="btn dark center" onclick="resetAll()">Сбросить данные приложения</button>
 </section>
@@ -3565,6 +3565,8 @@ var R_TYPES = [
   ["Дрон-наблюдатель", "#2196f3"], ["Мобильная вышка 5G", "#ff5722"], ["Летающая тарелка", "#00e5ff"],
   ["Снежный человек", "#ffffff"], ["Полтергейст", "#80deea"], ["Самолёт с инверсионным следом", "#fff59d"]
 ];
+// Политическая метка: убрать эту строку перед подачей на модерацию ВК, если модератор отклонит.
+R_TYPES.push(["Иноагент", "#9e9e9e"]);
 var R = { objs:[], sweep:0, last:0, raf:0, nextSpawn:0, listAt:0 };
 function rRadius(d, Rmax){ // нелинейная шкала: 0–50 м, 50–500 м, 500–1000 м
   if(d<=50) return Rmax*0.25*d/50;

@@ -251,6 +251,8 @@ body.vk .notvk{display:none}
 .aw svg{flex:0 0 40px;width:40px;height:56px}
 .aw b{font-size:13px;line-height:1.25;color:#e6e9ee;display:block}
 .aw span{font-size:11px;color:var(--muted);font-family:var(--mono)}
+.btn.foreign{background:transparent;border:1px dashed var(--line);color:#6b7a85;box-shadow:none;opacity:1;cursor:not-allowed}
+.btn.foreign .sub{color:#6b7a85}
 </style>
 </head>
 <body>
@@ -352,7 +354,8 @@ body.vk .notvk{display:none}
   <div id="qrAwards"></div>
   <p class="small" style="text-align:center;margin-top:10px">Код считывается камерой любого смартфона.</p>
   <button class="btn center" id="qrAct" onclick="go('activate')" style="display:none">Активировать защиту</button>
-  <button class="btn center vkonly" onclick="storyCert()">Опубликовать в историю</button>
+  <button class="btn center vkonly" onclick="storyCert()">Опубликовать в историю ВК</button>
+  <button class="btn center foreign" disabled>👎 Зарубежные соцсети<span class="sub">Не одобрено сервисом</span></button>
   <button class="btn center webonly" onclick="saveCert()">Сохранить сертификат картинкой</button>
   <button class="btn dark center vkonly" onclick="scanFriend()">Проверить сертификат друга</button>
   <button class="btn dark center" id="qrMail" onclick="mailCert()">Отправить сертификат на почту</button>
@@ -452,6 +455,10 @@ body.vk .notvk{display:none}
     <div class="timer" id="succTimer">23:59:59</div>
     <div class="small" style="text-align:center">до окончания сеанса экранирования</div>
   </div>
+  <button class="btn center vkonly" onclick="storyCert()">Опубликовать селфи в историю ВК</button>
+  <button class="btn center webonly" onclick="saveCert()">Сохранить селфи-сертификат</button>
+  <button class="btn center foreign" disabled>👎 Зарубежные соцсети<span class="sub">Не одобрено сервисом</span></button>
+  <p class="small qrmsg" style="text-align:center"></p>
   <div class="card">
     <div class="num" style="margin-bottom:8px" id="protoNo">ПРОТОКОЛ АКТИВАЦИИ</div>
     <div class="proto">
@@ -601,7 +608,7 @@ body.vk .notvk{display:none}
     <p>QR-код защиты ведёт на сайт проверки, который тоже является шуткой.</p>
     <p>Геомагнитный индекс — открытые данные Центра прогнозирования космической погоды NOAA (США). Рекомендации к нему — шутка.</p>
     <p class="small"><a href="https://dmitrynovikov495.github.io/folgard/privacy.html" style="color:var(--cyan)">Политика конфиденциальности</a> · <a href="https://dmitrynovikov495.github.io/folgard/terms.html" style="color:var(--cyan)">Пользовательское соглашение</a></p>
-    <p class="small">Версия 1.12</p>
+    <p class="small">Версия 1.13</p>
   </div>
   <button class="btn dark center" onclick="resetAll()">Сбросить данные приложения</button>
 </section>
@@ -3450,7 +3457,7 @@ function certImage(){
     return c.toDataURL("image/jpeg", 0.9);
   });
 }
-function qrMsg(t,col){ var m=document.getElementById("qrMsg"); m.style.color=col||"var(--muted)"; m.textContent=t; }
+function qrMsg(t,col){ document.querySelectorAll("#qrMsg,.qrmsg").forEach(function(m){ m.style.color=col||"var(--muted)"; m.textContent=t; }); }
 function storyCert(){
   certImage().then(function(img){
     return vkBridge.send("VKWebAppShowStoryBox", { background_type:"image", blob:img,
